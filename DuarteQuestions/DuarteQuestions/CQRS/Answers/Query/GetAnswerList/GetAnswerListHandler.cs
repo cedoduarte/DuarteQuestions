@@ -36,7 +36,7 @@ namespace DuarteQuestions.CQRS.Answers.Query.GetAnswerList
                                 // the text is filled?
                                 !string.IsNullOrEmpty(a.Text) ?
                                     // the text contains the keyword?
-                                    a.Text.ToLower().Contains(query.Keyword!.ToLower())
+                                    a.Text.ToLower().Contains(query.Keyword.ToLower())
                                 // the text is null or empty
                                 : false)
                         ).ToListAsync(cancel));

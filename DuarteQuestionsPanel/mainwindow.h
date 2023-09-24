@@ -56,7 +56,6 @@ private slots:
     void on_buttonDeleteUser_clicked();
     void on_buttonRestoreUser_clicked();
     void on_buttonReloadQuestions_clicked();
-
 private:
     void connectSlots();
     void populateTableWidget(QTableWidget *tableWidget, const QJsonArray &userArray);

@@ -35,7 +35,7 @@ namespace DuarteQuestions.CQRS.Questions.Command.UpdateQuestion
                             .FirstOrDefaultAsync(cancel);
                         if (foundAnswer != null)
                         {
-                            foundQuestion.Answers!.Add(foundAnswer);
+                            foundQuestion.Answers.Add(foundAnswer);
                         }
                     }
                     foundQuestion.RightAnswer = await _dbContext.Answers

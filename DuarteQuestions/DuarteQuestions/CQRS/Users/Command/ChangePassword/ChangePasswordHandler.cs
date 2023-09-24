@@ -40,7 +40,7 @@ namespace DuarteQuestions.CQRS.Users.Command.ChangePassword
                 }
                 User? foundUser = await _dbContext.Users
                     .Where(u => !u.IsDeleted 
-                           &&(u.Name == command.Username || u.Email == command.Username) 
+                           && (u.Name == command.Username || u.Email == command.Username) 
                            && u.Password == Util.ToSHA256(command.CurrentPassword))
                     .FirstOrDefaultAsync(cancel);
                 if (foundUser != null)

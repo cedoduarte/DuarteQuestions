@@ -44,7 +44,7 @@ namespace DuarteQuestions.CQRS.Users.Command.CreateUser
                 }
                 if (string.IsNullOrEmpty(command.ConfirmedPassword))
                 {
-                    throw new Exception($"The confirmed password cannot be empty");
+                    throw new Exception($"The confirmed password cannot be empty!");
                 }
                 if (command.Password != command.ConfirmedPassword)
                 {

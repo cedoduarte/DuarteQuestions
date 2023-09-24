@@ -41,7 +41,6 @@ MainWindow::~MainWindow()
 QFrame *MainWindow::makeQuestionFrame(const QString &questionText, const std::vector<QString> &answerList)
 {
     QFrame *questionFrame = new QFrame(this);
-    questionFrame->setFrameShape(QFrame::Box);
     QVBoxLayout *frameLayout = new QVBoxLayout;
     questionFrame->setLayout(frameLayout);
     QLabel *questionLabel = new QLabel(questionText, questionFrame);
