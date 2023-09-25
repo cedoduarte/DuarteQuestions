@@ -41,7 +41,7 @@ namespace DuarteQuestions.CQRS.Questions.Query.GetQuestionList
                                 // the text is null or empty
                                 : false)
                         ).Include(q => q.Answers)
-                            .ToListAsync(cancel));
+                         .ToListAsync(cancel));
                 }
                 throw new Exception($"Unknown exception!");
             }

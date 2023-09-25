@@ -37,7 +37,7 @@ namespace DuarteQuestions.CQRS.Questions.Command.CreateQuestion
                 foreach (int answerId in command.Answers!)
                 {
                     Answer? foundAnswer = await _dbContext.Answers
-                        .Where(a => a.Id == answerId)
+                        .Where(a => a.Id == answerId && !a.IsDeleted)
                         .FirstOrDefaultAsync(cancel);
                     if (foundAnswer != null)
                     {
@@ -45,7 +45,7 @@ namespace DuarteQuestions.CQRS.Questions.Command.CreateQuestion
                     }
                 }
                 question.RightAnswer = await _dbContext.Answers
-                    .Where(a => a.Id == command.RightAnswer)
+                    .Where(a => a.Id == command.RightAnswer && !a.IsDeleted)
                     .FirstOrDefaultAsync(cancel);
                 await _dbContext.Questions.AddAsync(question, cancel);
                 await _dbContext.SaveChangesAsync(cancel);

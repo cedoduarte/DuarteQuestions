@@ -27,14 +27,23 @@ public:
         RestoreUser,
         GetQuestionList,
         CreateAnswer,
-        CreateQuestion
+        CreateQuestion,
+        DeleteAnswer,
+        DeleteQuestion
     };
 
-    enum TableWidgetDisplay
+    enum UserDisplay
     {
-        NoneTableWidgetDisplay,
-        TableWidgetReadUsers,
-        TableWidgetDeleteUsers
+        NoneUserDisplay,
+        ReadUserDisplay,
+        DeleteUserDisplay
+    };
+
+    enum QuestionDisplay
+    {
+        NoneQuestionDisplay,
+        ReadQuestionDisplay,
+        DeleteQuestionDisplay
     };
 
     enum ReadUserColumn
@@ -59,12 +68,15 @@ private slots:
     void on_buttonAddAnswer_clicked();
     void on_buttonCreateQuestion_clicked();
     void on_buttonDeleteAnswer_clicked();
+    void on_buttonReloadTree_clicked();
+    void on_buttonDeleteQuestion_clicked();
 private:
     void connectSlots();
     void populateTableWidget(QTableWidget *tableWidget, const QJsonArray &userArray);
 
     Ui::MainWindow *ui;
-    TableWidgetDisplay m_tableWidgetDisplay;
+    QuestionDisplay m_questionDisplay;
+    UserDisplay m_userDisplay;
     NetOperation m_currentOperation;
     QNetAccessManager *m_netManager;
     QJsonArray m_answerDtoArray;

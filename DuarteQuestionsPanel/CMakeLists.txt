@@ -30,6 +30,7 @@ set(PROJECT_SOURCES
         apiurl.h apiurl.cpp
         questionframe.h questionframe.cpp
         questionlistcontainer.h questionlistcontainer.cpp
+        treeitemcheckbox.h treeitemcheckbox.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

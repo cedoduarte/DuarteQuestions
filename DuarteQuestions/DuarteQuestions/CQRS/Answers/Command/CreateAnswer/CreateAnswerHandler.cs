@@ -27,7 +27,6 @@ namespace DuarteQuestions.CQRS.Answers.Command.CreateAnswer
                 await _dbContext.SaveChangesAsync(cancel);
                 return new AnswerCreatedDTO()
                 {
-                    Result = true,
                     Id = answer.Id,
                     Text = answer.Text
                 };
