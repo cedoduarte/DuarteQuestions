@@ -2,6 +2,7 @@
 using DuarteQuestions.CQRS.Answers.Command.UpdateAnswer;
 using DuarteQuestions.CQRS.Answers.Query.GetAnswerList;
 using DuarteQuestions.CQRS.Answers.ViewModel;
+using DuarteQuestions.DTOs;
 using DuarteQuestions.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,7 @@ namespace DuarteQuestions.Controllers
         }
 
         [HttpPost("create-answer")]
-        public async Task<ActionResult<bool>> CreateAnswer([FromBody] CreateAnswerCommand command)
+        public async Task<ActionResult<AnswerCreatedDTO>> CreateAnswer([FromBody] CreateAnswerCommand command)
         {
             try
             {

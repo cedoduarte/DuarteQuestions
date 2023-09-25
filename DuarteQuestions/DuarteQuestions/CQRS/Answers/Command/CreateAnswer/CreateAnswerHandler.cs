@@ -1,9 +1,10 @@
-﻿using DuarteQuestions.Model;
+﻿using DuarteQuestions.DTOs;
+using DuarteQuestions.Model;
 using MediatR;
 
 namespace DuarteQuestions.CQRS.Answers.Command.CreateAnswer
 {
-    public class CreateAnswerHandler : IRequestHandler<CreateAnswerCommand, bool>
+    public class CreateAnswerHandler : IRequestHandler<CreateAnswerCommand, AnswerCreatedDTO>
     {
         private readonly AppDbContext _dbContext;
 
@@ -12,7 +13,7 @@ namespace DuarteQuestions.CQRS.Answers.Command.CreateAnswer
             _dbContext = dbContext;
         }
 
-        public async Task<bool> Handle(CreateAnswerCommand command, CancellationToken cancel)
+        public async Task<AnswerCreatedDTO> Handle(CreateAnswerCommand command, CancellationToken cancel)
         {
             try
             {
@@ -24,7 +25,12 @@ namespace DuarteQuestions.CQRS.Answers.Command.CreateAnswer
                 answer.Text = command.Text;
                 await _dbContext.Answers.AddAsync(answer, cancel);
                 await _dbContext.SaveChangesAsync(cancel);
-                return true;
+                return new AnswerCreatedDTO()
+                {
+                    Result = true,
+                    Id = answer.Id,
+                    Text = answer.Text
+                };
             }
             catch (Exception)
             {

@@ -28,6 +28,8 @@ set(PROJECT_SOURCES
         util.h util.cpp
         logindialog.cpp logindialog.h logindialog.ui
         apiurl.h apiurl.cpp
+        questionframe.h questionframe.cpp
+        questionlistcontainer.h questionlistcontainer.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -4,6 +4,7 @@ using DuarteQuestions.CQRS.Answers.Command.UpdateAnswer;
 using DuarteQuestions.CQRS.Answers.Query.GetAnswerById;
 using DuarteQuestions.CQRS.Answers.Query.GetAnswerList;
 using DuarteQuestions.CQRS.Answers.ViewModel;
+using DuarteQuestions.DTOs;
 using DuarteQuestions.Service.Interface;
 using MediatR;
 
@@ -18,7 +19,7 @@ namespace DuarteQuestions.Service
             _mediator = mediator;
         }
 
-        public async Task<bool> CreateAnswer(CreateAnswerCommand command) 
+        public async Task<AnswerCreatedDTO> CreateAnswer(CreateAnswerCommand command) 
         {
             try
             {

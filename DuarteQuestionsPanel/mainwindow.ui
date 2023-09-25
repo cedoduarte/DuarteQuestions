@@ -28,7 +28,7 @@
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabUserCRUD">
           <property name="currentIndex">
-           <number>1</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tabCreateUser">
            <attribute name="title">
@@ -555,12 +555,96 @@
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabQuestionCRUD">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tabCreateQuestion">
            <attribute name="title">
             <string>Create</string>
            </attribute>
+           <layout class="QGridLayout" name="gridLayout_14">
+            <item row="0" column="0" colspan="2">
+             <widget class="QFrame" name="frame_4">
+              <property name="frameShape">
+               <enum>QFrame::Box</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_13">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_9">
+                 <property name="text">
+                  <string>Question</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QPushButton" name="buttonAddAnswer">
+                 <property name="text">
+                  <string>Add answer</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="txtAnswer"/>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_13">
+                 <property name="text">
+                  <string>Answer</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <widget class="QPushButton" name="buttonDeleteAnswer">
+                 <property name="text">
+                  <string>Delete answer</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" colspan="4">
+                <widget class="QListWidget" name="listWidgetAnswer"/>
+               </item>
+               <item row="0" column="1" colspan="3">
+                <widget class="QLineEdit" name="txtQuestion"/>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <spacer name="horizontalSpacer_10">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>430</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="buttonCreateQuestion">
+              <property name="text">
+               <string>Create question</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <spacer name="horizontalSpacer_9">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>430</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </widget>
           <widget class="QWidget" name="tabReadQuestion">
            <attribute name="title">

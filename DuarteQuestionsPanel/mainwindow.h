@@ -3,9 +3,7 @@
 
 #include <QMainWindow>
 #include <QJsonArray>
-#include <vector>
 
-class QFrame;
 class QNetworkReply;
 class QNetAccessManager;
 class QTableWidget;
@@ -27,7 +25,9 @@ public:
         ChangePassword,
         DeleteUser,
         RestoreUser,
-        GetQuestionList
+        GetQuestionList,
+        CreateAnswer,
+        CreateQuestion
     };
 
     enum TableWidgetDisplay
@@ -56,15 +56,18 @@ private slots:
     void on_buttonDeleteUser_clicked();
     void on_buttonRestoreUser_clicked();
     void on_buttonReloadQuestions_clicked();
+    void on_buttonAddAnswer_clicked();
+    void on_buttonCreateQuestion_clicked();
+    void on_buttonDeleteAnswer_clicked();
 private:
     void connectSlots();
     void populateTableWidget(QTableWidget *tableWidget, const QJsonArray &userArray);
-    QFrame* makeQuestionFrame(const QString &questionText, const std::vector<QString> &answerList);
 
     Ui::MainWindow *ui;
     TableWidgetDisplay m_tableWidgetDisplay;
     NetOperation m_currentOperation;
     QNetAccessManager *m_netManager;
+    QJsonArray m_answerDtoArray;
 };
 
 #endif // MAINWINDOW_H
