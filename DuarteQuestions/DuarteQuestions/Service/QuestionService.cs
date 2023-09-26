@@ -1,5 +1,6 @@
 ﻿using DuarteQuestions.CQRS.Questions.Command.CreateQuestion;
 using DuarteQuestions.CQRS.Questions.Command.DeleteQuestion;
+using DuarteQuestions.CQRS.Questions.Command.RestoreAllQuestion;
 using DuarteQuestions.CQRS.Questions.Command.UpdateQuestion;
 using DuarteQuestions.CQRS.Questions.Query.GetQuestionById;
 using DuarteQuestions.CQRS.Questions.Query.GetQuestionList;
@@ -77,6 +78,18 @@ namespace DuarteQuestions.Service
                 {
                     Id = id
                 });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> RestoreAll()
+        {
+            try
+            {
+                return await _mediator.Send(new RestoreAllQuestionCommand());
             }
             catch (Exception)
             {

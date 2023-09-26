@@ -83,5 +83,18 @@ namespace DuarteQuestions.Controllers
                 throw;
             }
         }
+
+        [HttpGet("restore-all")]
+        public async Task<ActionResult<bool>> RestoreAll()
+        {
+            try
+            {
+                return await _answerService.RestoreAll();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

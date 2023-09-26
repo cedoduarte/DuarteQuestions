@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QJsonArray>
+#include <vector>
 
 class QNetworkReply;
 class QNetAccessManager;
@@ -29,7 +30,9 @@ public:
         CreateAnswer,
         CreateQuestion,
         DeleteAnswer,
-        DeleteQuestion
+        DeleteQuestion,
+        RestoreAllAnswer,
+        RestoreAllQuestion
     };
 
     enum UserDisplay
@@ -70,9 +73,24 @@ private slots:
     void on_buttonDeleteAnswer_clicked();
     void on_buttonReloadTree_clicked();
     void on_buttonDeleteQuestion_clicked();
+    void on_buttonRestoreAllQuestion_clicked();
+
 private:
     void connectSlots();
     void populateTableWidget(QTableWidget *tableWidget, const QJsonArray &userArray);
+    void onRequestError(QNetworkReply *reply);
+    void onCreateUser(QNetworkReply *reply);
+    void onGetUserList(QNetworkReply *reply);
+    void onChangePassword(QNetworkReply *reply);
+    void onDeleteUser(QNetworkReply *reply);
+    void onRestoreUser(QNetworkReply *reply);
+    void onGetQuestionList(QNetworkReply *reply);
+    void onCreateAnswer(QNetworkReply *reply);
+    void onCreateQuestion(QNetworkReply *reply);
+    void onDeleteAnswer(QNetworkReply *reply);
+    void onDeleteQuestion(QNetworkReply *reply);
+    void onRestoreAllAnswer(QNetworkReply *reply);
+    void onRestoreAllQuestion(QNetworkReply *reply);
 
     Ui::MainWindow *ui;
     QuestionDisplay m_questionDisplay;
@@ -80,6 +98,13 @@ private:
     NetOperation m_currentOperation;
     QNetAccessManager *m_netManager;
     QJsonArray m_answerDtoArray;
+
+    bool m_allAnswerRestored;
+    bool m_allQuestionRestored;
+    int m_deletedAnswerCount;
+    int m_deletedQuestionCount;
+    std::vector<int> m_answerList;
+    std::vector<int> m_questionList;
 };
 
 #endif // MAINWINDOW_H

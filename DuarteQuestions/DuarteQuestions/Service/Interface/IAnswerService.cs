@@ -13,5 +13,6 @@ namespace DuarteQuestions.Service.Interface
         Task<bool> DeleteAnswer(int id);
         Task<IEnumerable<AnswerViewModel>> GetAnswerList(GetAnswerListQuery query);
         Task<AnswerViewModel> GetAnswerById(int id);
+        Task<bool> RestoreAll();
     }
 }

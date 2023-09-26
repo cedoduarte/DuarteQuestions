@@ -2,6 +2,7 @@
 using DuarteQuestions.CQRS.Questions.Command.UpdateQuestion;
 using DuarteQuestions.CQRS.Questions.Query.GetQuestionList;
 using DuarteQuestions.CQRS.Questions.ViewModel;
+using DuarteQuestions.Service;
 using DuarteQuestions.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -76,6 +77,19 @@ namespace DuarteQuestions.Controllers
             try
             {
                 return await _questionService.GetQuestionById(id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("restore-all")]
+        public async Task<ActionResult<bool>> RestoreAll()
+        {
+            try
+            {
+                return await _questionService.RestoreAll();
             }
             catch (Exception)
             {

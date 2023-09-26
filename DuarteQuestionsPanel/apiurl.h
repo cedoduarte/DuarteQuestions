@@ -17,6 +17,8 @@ public:
     static const QString ApiCreateQuestionUrl;
     static const QString ApiDeleteAnswerUrl;
     static const QString ApiDeleteQuestionUrl;
+    static const QString ApiRestoreAllQuestionUrl;
+    static const QString ApiRestoreAllAnswerUrl;
 
     ApiUrl() = delete;
 };

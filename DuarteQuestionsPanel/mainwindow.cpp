@@ -23,7 +23,11 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);    
+    ui->setupUi(this);
+    m_allAnswerRestored = false;
+    m_allQuestionRestored = false;
+    m_deletedAnswerCount = 0;
+    m_deletedQuestionCount = 0;
     m_questionDisplay = NoneQuestionDisplay;
     m_userDisplay = NoneUserDisplay;
     m_currentOperation = NoneOperation;
@@ -252,7 +256,7 @@ void MainWindow::on_buttonDeleteUser_clicked()
 
 void MainWindow::on_buttonReloadQuestions_clicked()
 {
-    QString keyword = ""; // todo... poner filtro
+    QString keyword = ui->txtReadQuestionKeyword->text();
     QString urlString = ApiUrl::ApiGetQuestionListUrl + (keyword.isEmpty() ? "?GetAll=true" : "?Keyword=" + keyword);
     m_questionDisplay = ReadQuestionDisplay;
     m_currentOperation = GetQuestionList;
@@ -279,7 +283,7 @@ void MainWindow::on_buttonDeleteAnswer_clicked()
 
 void MainWindow::on_buttonReloadTree_clicked()
 {
-    QString keyword = ""; // todo... poner filtro
+    QString keyword = ui->txtDeleteQuestionKeyword->text();
     QString urlString = ApiUrl::ApiGetQuestionListUrl + (keyword.isEmpty() ? "?GetAll=true" : "?Keyword=" + keyword);
     m_questionDisplay = DeleteQuestionDisplay;
     m_currentOperation = GetQuestionList;
@@ -288,8 +292,10 @@ void MainWindow::on_buttonReloadTree_clicked()
 
 void MainWindow::on_buttonDeleteQuestion_clicked()
 {
-    std::vector<int> answerList;
-    std::vector<int> questionList;
+    m_deletedAnswerCount = 0;
+    m_deletedQuestionCount = 0;
+    m_answerList.clear();
+    m_questionList.clear();
     const int questionCount = ui->treeWidgetQuestions->topLevelItemCount();
     for (int xq = 0; xq < questionCount; ++xq)
     {
@@ -298,7 +304,7 @@ void MainWindow::on_buttonDeleteQuestion_clicked()
             ui->treeWidgetQuestions->itemWidget(questionItem, 0));
         if (questionCheckBox->isChecked())
         {
-            questionList.push_back(questionCheckBox->data().toInt());
+            m_questionList.push_back(questionCheckBox->data().toInt());
         }
         const int answerCount = ui->treeWidgetQuestions->topLevelItem(xq)->childCount();
         for (int xa = 0; xa < answerCount; ++xa)
@@ -308,25 +314,208 @@ void MainWindow::on_buttonDeleteQuestion_clicked()
                 ui->treeWidgetQuestions->itemWidget(answerItem, 0));
             if (answerCheckBox->isChecked())
             {
-                answerList.push_back(answerCheckBox->data().toInt());
+                m_answerList.push_back(answerCheckBox->data().toInt());
             }
         }
     }
     // delete all selected answers
-    for (int answerId : answerList)
+    for (int answerId : m_answerList)
     {
         QString urlString = ApiUrl::ApiDeleteAnswerUrl + "/" + QString::number(answerId);
         m_currentOperation = DeleteAnswer;
         m_netManager->deleteResource(QNetRequest(QUrl(urlString)));
-
     }
     // delete all selected questions
-    for (int questionId : questionList)
+    for (int questionId : m_questionList)
     {
         QString urlString = ApiUrl::ApiDeleteQuestionUrl + "/" + QString::number(questionId);
         m_currentOperation = DeleteQuestion;
         m_netManager->deleteResource(QNetRequest(QUrl(urlString)));
     }
+}
+
+void MainWindow::on_buttonRestoreAllQuestion_clicked()
+{
+    // restore all deleted answers
+    m_allAnswerRestored = false;
+    QString urlString = ApiUrl::ApiRestoreAllAnswerUrl;
+    m_currentOperation = RestoreAllAnswer;
+    m_netManager->get(QNetRequest(QUrl(urlString)));
+
+    // restore all deleted questions
+    m_allQuestionRestored = false;
+    urlString = ApiUrl::ApiRestoreAllQuestionUrl;
+    m_currentOperation = RestoreAllQuestion;
+    m_netManager->get(QNetRequest(QUrl(urlString)));
+}
+
+void MainWindow::onCreateUser(QNetworkReply *reply)
+{
+    QMessageBox::information(this, "Ok", "User created successfully!");
+}
+
+void MainWindow::onGetUserList(QNetworkReply *reply)
+{
+    if (m_userDisplay == ReadUserDisplay)
+    {
+        populateTableWidget(ui->tableWidgetReadUsers, QJsonDocument::fromJson(reply->readAll()).array());
+    }
+    else if (m_userDisplay == DeleteUserDisplay)
+    {
+        populateTableWidget(ui->tableWidgetDeleteUsers, QJsonDocument::fromJson(reply->readAll()).array());
+    }
+}
+
+void MainWindow::onChangePassword(QNetworkReply *reply)
+{
+    QMessageBox::information(this, "Ok", "User's password was changed successfully!");
+}
+
+void MainWindow::onDeleteUser(QNetworkReply *reply)
+{
+    QMessageBox::information(this, "Ok", "User deleted successfully!");
+}
+
+void MainWindow::onRestoreUser(QNetworkReply *reply)
+{
+    QMessageBox::information(this, "Ok", "User restored successfully!");
+}
+
+void MainWindow::onGetQuestionList(QNetworkReply *reply)
+{
+    if (m_questionDisplay == ReadQuestionDisplay)
+    {
+        delete ui->scrollArea->widget();
+        ui->scrollArea->setWidget(new QuestionListContainer(
+            QJsonDocument::fromJson(reply->readAll()).array(), this));
+    }
+    else if (m_questionDisplay == DeleteQuestionDisplay)
+    {
+        // clear question tree
+        while (ui->treeWidgetQuestions->topLevelItemCount() != 0)
+        {
+            delete ui->treeWidgetQuestions->takeTopLevelItem(0);
+        }
+        QJsonArray questionArray = QJsonDocument::fromJson(reply->readAll()).array();
+        for (const QJsonValue &questionValue : questionArray)
+        {
+            QTreeWidgetItem *questionItem = new QTreeWidgetItem;
+            TreeItemCheckBox *questionCheckBox = new TreeItemCheckBox(this);
+            questionCheckBox->setText(QFlexibleJsonObject::value(questionValue.toObject(), "text").toString());
+            questionCheckBox->setData(QFlexibleJsonObject::value(questionValue.toObject(), "id").toInt());
+            QJsonArray answerArray = QFlexibleJsonObject::value(questionValue.toObject(), "answers").toArray();
+            for (const QJsonValue &answerValue : answerArray)
+            {
+                if (!QFlexibleJsonObject::value(answerValue.toObject(), "isDeleted").toBool())
+                {
+                    QTreeWidgetItem *answerItem = new QTreeWidgetItem;
+                    answerItem->setText(0, QFlexibleJsonObject::value(answerValue.toObject(), "text").toString());
+                    answerItem->setData(0, Qt::UserRole, QFlexibleJsonObject::value(answerValue.toObject(), "id").toInt());
+                    questionItem->addChild(answerItem);
+                }
+            }
+            ui->treeWidgetQuestions->addTopLevelItem(questionItem);
+            ui->treeWidgetQuestions->setItemWidget(questionItem, 0, questionCheckBox);
+            for (int i = 0; i < questionItem->childCount(); ++i)
+            {
+                TreeItemCheckBox *answerCheckBox = new TreeItemCheckBox(this);
+                answerCheckBox->setText(questionItem->child(i)->text(0));
+                answerCheckBox->setData(questionItem->child(i)->data(0, Qt::UserRole).toInt());
+                ui->treeWidgetQuestions->setItemWidget(questionItem->child(i), 0, answerCheckBox);
+                questionItem->child(i)->setText(0, nullptr);
+            }
+        }
+    }
+}
+
+void MainWindow::onCreateAnswer(QNetworkReply *reply)
+{
+    m_answerDtoArray.append(QJsonDocument::fromJson(reply->readAll()).object());
+    // the answer was created successfully with ID
+    if (m_answerDtoArray.size() == ui->listWidgetAnswer->count())
+    {
+        // all the answers were created successfully, now it is moment to create the question
+        QJsonArray answerIdList;
+        for (const QJsonValue &dto : qAsConst(m_answerDtoArray))
+        {
+            answerIdList.append(QFlexibleJsonObject::value(dto.toObject(), "id").toInt());
+        }
+        QString rightAnswerText;
+        for (int row = 0; row < ui->listWidgetAnswer->count(); ++row)
+        {
+            QRadioButton *answerRadio = dynamic_cast<QRadioButton*>(
+                ui->listWidgetAnswer->itemWidget(ui->listWidgetAnswer->item(row)));
+            if (answerRadio->isChecked())
+            {
+                rightAnswerText = answerRadio->text();
+                break;
+            }
+        }
+        int rightAnswerId = QFlexibleJsonObject::value(m_answerDtoArray.at(0).toObject(), "id").toInt();
+        if (!rightAnswerText.isEmpty())
+        {
+            for (const QJsonValue &dto : qAsConst(m_answerDtoArray))
+            {
+                QString answerText = QFlexibleJsonObject::value(dto.toObject(), "text").toString();
+                if (rightAnswerText == answerText)
+                {
+                    rightAnswerId = QFlexibleJsonObject::value(dto.toObject(), "id").toInt();
+                    break;
+                }
+            }
+        }
+        QJsonDocument doc;
+        doc.setObject({
+            { "text", ui->txtQuestion->text() },
+            { "answers", answerIdList },
+            { "rightAnswer", rightAnswerId }
+        });
+        m_currentOperation = CreateQuestion;
+        m_netManager->post(QNetRequest(QUrl(ApiUrl::ApiCreateQuestionUrl)),
+                           doc.toJson(QJsonDocument::Compact));
+        // clear list of answers' DTOs
+        while (!m_answerDtoArray.empty())
+        {
+            m_answerDtoArray.pop_back();
+        }
+    }
+}
+
+void MainWindow::onCreateQuestion(QNetworkReply *reply)
+{
+    QMessageBox::information(this, "Ok", "Question created successfully!");
+}
+
+void MainWindow::onDeleteAnswer(QNetworkReply *reply)
+{
+    m_deletedAnswerCount++;
+    ui->statusBar->showMessage("Deleted answer count: " + QString::number(m_deletedAnswerCount));
+}
+
+void MainWindow::onDeleteQuestion(QNetworkReply *reply)
+{
+    m_deletedQuestionCount++;
+    ui->statusBar->showMessage("Deleted question count: " + QString::number(m_deletedQuestionCount));
+}
+
+void MainWindow::onRestoreAllAnswer(QNetworkReply *reply)
+{
+    m_allAnswerRestored = true;
+    ui->statusBar->showMessage("All deleted answers were restored!");
+}
+
+void MainWindow::onRestoreAllQuestion(QNetworkReply *reply)
+{
+    m_allQuestionRestored = true;
+    ui->statusBar->showMessage("All deleted questions were restored!");
+}
+
+void MainWindow::onRequestError(QNetworkReply *reply)
+{
+    QString systemExceptionString = QString::fromLatin1(reply->readAll());
+    systemExceptionString = systemExceptionString.isEmpty() ? "Unknown error!"
+        : systemExceptionString.mid(0, systemExceptionString.indexOf("!")).simplified();
+    ui->statusBar->showMessage(systemExceptionString);
 }
 
 void MainWindow::requestFinished(QNetworkReply *reply)
@@ -337,171 +526,62 @@ void MainWindow::requestFinished(QNetworkReply *reply)
         {
             case CreateUser:
             {
-                QString result = QString::fromLatin1(reply->readAll());
-                if (result == "true")
-                {
-                    QMessageBox::information(this, "Ok", "User created successfully!");
-                }
+                onCreateUser(reply);
                 break;
             }
             case ChangePassword:
             {
-                QString result = QString::fromLatin1(reply->readAll());
-                if (result == "true")
-                {
-                    QMessageBox::information(this, "Ok", "User's password was changed successfully!");
-                }
+                onChangePassword(reply);
                 break;
             }
             case GetUserList:
             {
-                if (m_userDisplay == ReadUserDisplay)
-                {
-                    populateTableWidget(ui->tableWidgetReadUsers, QJsonDocument::fromJson(reply->readAll()).array());
-                }
-                else if (m_userDisplay == DeleteUserDisplay)
-                {
-                    populateTableWidget(ui->tableWidgetDeleteUsers, QJsonDocument::fromJson(reply->readAll()).array());
-                }
+                onGetUserList(reply);
                 break;
             }
             case DeleteUser:
             {
-                QString result = QString::fromLatin1(reply->readAll());
-                if (result == "true")
-                {
-                    QMessageBox::information(this, "Ok", "User deleted successfully!");
-                }
+                onDeleteUser(reply);
                 break;
             }
             case RestoreUser:
             {
-                QString result = QString::fromLatin1(reply->readAll());
-                if (result == "true")
-                {
-                    QMessageBox::information(this, "Ok", "User restored successfully!");
-                }
+                onRestoreUser(reply);
                 break;
             }
             case GetQuestionList:
             {
-                if (m_questionDisplay == ReadQuestionDisplay)
-                {
-                    delete ui->scrollArea->widget();
-                    ui->scrollArea->setWidget(new QuestionListContainer(
-                        QJsonDocument::fromJson(reply->readAll()).array(), this));
-                }
-                else if (m_questionDisplay == DeleteQuestionDisplay)
-                {
-                    // clear question tree
-                    while (ui->treeWidgetQuestions->topLevelItemCount() != 0)
-                    {
-                        delete ui->treeWidgetQuestions->takeTopLevelItem(0);
-                    }
-                    QJsonArray questionArray = QJsonDocument::fromJson(reply->readAll()).array();
-                    for (const QJsonValue &questionValue : questionArray)
-                    {
-                        QTreeWidgetItem *questionItem = new QTreeWidgetItem;
-                        TreeItemCheckBox *questionCheckBox = new TreeItemCheckBox(this);
-                        questionCheckBox->setText(QFlexibleJsonObject::value(questionValue.toObject(), "text").toString());
-                        questionCheckBox->setData(QFlexibleJsonObject::value(questionValue.toObject(), "id").toInt());
-                        QJsonArray answerArray = QFlexibleJsonObject::value(questionValue.toObject(), "answers").toArray();
-                        for (const QJsonValue &answerValue : answerArray)
-                        {
-                            if (!QFlexibleJsonObject::value(answerValue.toObject(), "isDeleted").toBool())
-                            {
-                                QTreeWidgetItem *answerItem = new QTreeWidgetItem;
-                                answerItem->setText(0, QFlexibleJsonObject::value(answerValue.toObject(), "text").toString());
-                                answerItem->setData(0, Qt::UserRole, QFlexibleJsonObject::value(answerValue.toObject(), "id").toInt());
-                                questionItem->addChild(answerItem);
-                            }
-                        }
-                        ui->treeWidgetQuestions->addTopLevelItem(questionItem);
-                        ui->treeWidgetQuestions->setItemWidget(questionItem, 0, questionCheckBox);
-                        for (int i = 0; i < questionItem->childCount(); ++i)
-                        {
-                            TreeItemCheckBox *answerCheckBox = new TreeItemCheckBox(this);
-                            answerCheckBox->setText(questionItem->child(i)->text(0));
-                            answerCheckBox->setData(questionItem->child(i)->data(0, Qt::UserRole).toInt());
-                            ui->treeWidgetQuestions->setItemWidget(questionItem->child(i), 0, answerCheckBox);
-                            questionItem->child(i)->setText(0, nullptr);
-                        }
-                    }
-                }
+                onGetQuestionList(reply);
                 break;
             }
             case CreateAnswer:
             {
-                m_answerDtoArray.append(QJsonDocument::fromJson(reply->readAll()).object());
-                // the answer was created successfully with ID
-                if (m_answerDtoArray.size() == ui->listWidgetAnswer->count())
-                {
-                    // all the answers were created successfully, now it is moment to create the question
-                    QJsonArray answerIdList;
-                    for (const QJsonValue &dto : qAsConst(m_answerDtoArray))
-                    {
-                        answerIdList.append(QFlexibleJsonObject::value(dto.toObject(), "id").toInt());
-                    }
-                    QString rightAnswerText;
-                    for (int row = 0; row < ui->listWidgetAnswer->count(); ++row)
-                    {
-                        QRadioButton *answerRadio = dynamic_cast<QRadioButton*>(
-                            ui->listWidgetAnswer->itemWidget(ui->listWidgetAnswer->item(row)));
-                        if (answerRadio->isChecked())
-                        {
-                            rightAnswerText = answerRadio->text();
-                            break;
-                        }
-                    }
-                    int rightAnswerId = QFlexibleJsonObject::value(m_answerDtoArray.at(0).toObject(), "id").toInt();
-                    if (!rightAnswerText.isEmpty())
-                    {
-                        for (const QJsonValue &dto : qAsConst(m_answerDtoArray))
-                        {
-                            QString answerText = QFlexibleJsonObject::value(dto.toObject(), "text").toString();
-                            if (rightAnswerText == answerText)
-                            {
-                                rightAnswerId = QFlexibleJsonObject::value(dto.toObject(), "id").toInt();
-                                break;
-                            }
-                        }
-                    }
-                    QJsonDocument doc;
-                    doc.setObject({
-                        { "text", ui->txtQuestion->text() },
-                        { "answers", answerIdList },
-                        { "rightAnswer", rightAnswerId }
-                    });
-                    m_currentOperation = CreateQuestion;
-                    m_netManager->post(QNetRequest(QUrl(ApiUrl::ApiCreateQuestionUrl)),
-                                       doc.toJson(QJsonDocument::Compact));
-                    // clear list of answers' DTOs
-                    while (!m_answerDtoArray.empty())
-                    {
-                        m_answerDtoArray.pop_back();
-                    }
-                }
+                onCreateAnswer(reply);
                 break;
             }
             case CreateQuestion:
             {
-                QString result = QString::fromLatin1(reply->readAll());
-                if (result == "true")
-                {
-                    QMessageBox::information(this, "Ok", "Question created successfully!");
-                }
+                onCreateQuestion(reply);
                 break;
             }
             case DeleteAnswer:
             {
-                // todo... mostrar las respuestas que fueron eliminadas
-                qDebug() << "answer deleted:" << QString::fromLatin1(reply->readAll());
+                onDeleteAnswer(reply);
                 break;
             }
             case DeleteQuestion:
             {
-                // todo... mostrar las preguntas que fueron eliminadas, junto a sus respuestas
-                qDebug() << "question deleted:" << QString::fromLatin1(reply->readAll());
+                onDeleteQuestion(reply);
+                break;
+            }
+            case RestoreAllAnswer:
+            {
+                onRestoreAllAnswer(reply);
+                break;
+            }
+            case RestoreAllQuestion:
+            {
+                onRestoreAllQuestion(reply);
                 break;
             }
             case NoneOperation:
@@ -512,9 +592,6 @@ void MainWindow::requestFinished(QNetworkReply *reply)
     }
     else
     {
-        QString systemExceptionString = QString::fromLatin1(reply->readAll());
-        systemExceptionString = systemExceptionString.isEmpty() ? "Unknown error!"
-                              : systemExceptionString.mid(0, systemExceptionString.indexOf("!")).simplified();
-        QMessageBox::warning(this, "Warn", systemExceptionString);
+        onRequestError(reply);
     }
 }

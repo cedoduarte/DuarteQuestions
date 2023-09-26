@@ -12,5 +12,6 @@ namespace DuarteQuestions.Service.Interface
         Task<bool> DeleteQuestion(int id);
         Task<IEnumerable<QuestionViewModel>> GetQuestionList(GetQuestionListQuery query);
         Task<QuestionViewModel> GetQuestionById(int id);
+        Task<bool> RestoreAll();
     }
 }

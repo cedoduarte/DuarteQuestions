@@ -11,3 +11,5 @@ const QString ApiUrl::ApiCreateAnswerUrl = "https://localhost:7137/api/Answer/cr
 const QString ApiUrl::ApiCreateQuestionUrl = "https://localhost:7137/api/Question/create-question";
 const QString ApiUrl::ApiDeleteAnswerUrl = "https://localhost:7137/api/Answer/delete-answer";
 const QString ApiUrl::ApiDeleteQuestionUrl = "https://localhost:7137/api/Question/delete-question";
+const QString ApiUrl::ApiRestoreAllQuestionUrl = "https://localhost:7137/api/Question/restore-all";
+const QString ApiUrl::ApiRestoreAllAnswerUrl = "https://localhost:7137/api/Answer/restore-all";
