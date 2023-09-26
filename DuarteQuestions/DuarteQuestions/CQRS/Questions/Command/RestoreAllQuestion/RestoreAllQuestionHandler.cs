@@ -17,7 +17,9 @@ namespace DuarteQuestions.CQRS.Questions.Command.RestoreAllQuestion
         {
             try
             {
-                IEnumerable<Question> foundQuestions = await _dbContext.Questions.Where(q => q.IsDeleted).ToListAsync(cancel);
+                IEnumerable<Question> foundQuestions = await _dbContext.Questions
+                    .Where(q => q.IsDeleted)
+                    .ToListAsync(cancel);
                 foreach (Question question in foundQuestions)
                 {
                     question.IsDeleted = false;
