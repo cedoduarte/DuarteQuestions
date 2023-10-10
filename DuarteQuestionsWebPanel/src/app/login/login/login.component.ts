@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -7,9 +8,10 @@ import { FormControl, FormGroup } from '@angular/forms';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  public login: FormGroup;
+  public login: FormGroup;  
+  private userService = inject(UserService);
 
-  constructor() {
+  constructor() {  
     this.login = new FormGroup({
       username: new FormControl(),
       password: new FormControl()
@@ -20,9 +22,16 @@ export class LoginComponent implements OnInit {
   }
 
   public onSubmit(form: FormGroup): void {
-    const username: string = form.controls["username"].value;
-    const password: string = form.controls["password"].value;
-    const output: string = "your name is " + username + " and your password is " + password;
-    console.log(output);
+    this.userService.login({
+      username: form.controls["username"].value,
+      password: form.controls["password"].value
+    }).subscribe({
+      next: response => {
+        console.log(response);
+      },
+      error: err => {
+        console.log("error: " + err.message);
+      }
+    });
   }
 }
