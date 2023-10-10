@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MessageType, ToasterService } from 'src/app/services/toaster.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -10,6 +11,7 @@ import { UserService } from 'src/app/services/user.service';
 export class LoginComponent implements OnInit {
   public login: FormGroup;  
   private userService = inject(UserService);
+  private toaster = inject(ToasterService);
 
   constructor() {  
     this.login = new FormGroup({
@@ -27,10 +29,10 @@ export class LoginComponent implements OnInit {
       password: form.controls["password"].value
     }).subscribe({
       next: response => {
-        console.log(response);
+        this.toaster.showMessage(MessageType.Success, "OK", "¡Ha ingresado correctamente!");
       },
       error: err => {
-        console.log("error: " + err.message);
+        this.toaster.showMessage(MessageType.Critical, "Error", err.message);
       }
     });
   }
