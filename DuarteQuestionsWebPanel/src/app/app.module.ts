@@ -1,6 +1,7 @@
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login/login.component';
 import { ApiTesterComponent } from './api-tester/api-tester.component';
+import { IntegerSpinnerComponent } from './integer-spinner/integer-spinner.component';
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -20,8 +21,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
-import { IntegerSpinnerComponent } from './integer-spinner/integer-spinner.component';
-
 
 @NgModule({
   declarations: [

@@ -37,8 +37,11 @@
                     </div>
                     <div *ngIf="answerValue === AnswerGet">
                         <h1>Get answer</h1>
-                        <app-integer-spinner></app-integer-spinner>
-                        <button type="button" class="btn btn-primary api-tester-get-button">GET</button>
+                        <div class="row">
+                            <app-integer-spinner class="col-md-3" [currentValue]="answerId" (currentValueChange)="answerIdChanged($event)"></app-integer-spinner>
+                            <button type="button" class="btn btn-primary col-md-1 api-tester-get-button" (click)="getAnswerById()">GET</button>
+                            <span>{{answerText}}</span>
+                        </div>
                     </div>
                     <div *ngIf="answerValue === AnswerRestoreAll">
                         <button type="button" class="btn btn-primary api-tester-get-button">GET</button>

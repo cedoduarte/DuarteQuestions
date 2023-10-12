@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-integer-spinner',
@@ -6,13 +6,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./integer-spinner.component.css']
 })
 export class IntegerSpinnerComponent {
-  public currentValue: number = 1;
+  @Input() public currentValue: number = 1;
+  @Output() public currentValueChange: EventEmitter<number> = new EventEmitter<number>();
 
   public minusButtonClicked(): void {
     this.currentValue--;
+    this.currentValueChange.emit(this.currentValue);
   }
 
   public plusButtonClicked(): void {
     this.currentValue++;
+    this.currentValueChange.emit(this.currentValue);
   }
 }

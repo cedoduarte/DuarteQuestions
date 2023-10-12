@@ -27,6 +27,8 @@ export class ApiTesterComponent {
   private answerGetAll: boolean = false;
   public answerKeyword: string = "";
   public answers: AnswerViewModel[] = [];
+  public answerId: number = 1;
+  public answerText: string = "";
 
   public answerGetMethodSelected($event: any): void {
     this.answerValue = $event.value;
@@ -43,6 +45,19 @@ export class ApiTesterComponent {
         getAll: this.answerGetAll
       }).subscribe({
         next: response => this.answers = response,
+        error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+      });
+    }
+  }
+
+  public answerIdChanged($event: any): void {
+    this.answerId = $event;
+  }
+  
+  public getAnswerById(): void {
+    if (this.answerId >= 0) {
+      this.answerService.getAnswerById(this.answerId).subscribe({
+        next: response => this.answerText = response.text,
         error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
       });
     }
