@@ -1,16 +1,16 @@
-import { Injectable, inject } from '@angular/core';
-import { environment } from '../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { Observable, share } from 'rxjs';
-import { EndPoints } from '../endpoints/endpoints/endpoints';
 import { ChangePasswordCommand, CreateUserCommand, GetUserListQuery, LogInCommand, RestoreUserCommand, UpdateUserCommand, UserViewModel } from '../DTOs/models/models';
+import { EndPoints } from '../endpoints/endpoints/endpoints';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable, share } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private baseApiUrl: string = environment.baseApiUrl;
-  private http = inject(HttpClient);
+  private http: HttpClient = inject(HttpClient);
 
   constructor() {}
 

@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MessageType, ToasterService } from 'src/app/services/toaster.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -9,9 +10,10 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  public login: FormGroup;  
-  private userService = inject(UserService);
-  private toaster = inject(ToasterService);
+  public login: FormGroup;
+  private router: Router = inject(Router);
+  private userService: UserService = inject(UserService);
+  private toaster: ToasterService = inject(ToasterService);
 
   constructor() {  
     this.login = new FormGroup({
@@ -30,6 +32,7 @@ export class LoginComponent implements OnInit {
     }).subscribe({
       next: response => {
         this.toaster.showMessage(MessageType.Success, "OK", "¡Ha ingresado correctamente!");
+        this.router.navigate(["/api-tester"]);
       },
       error: err => {
         this.toaster.showMessage(MessageType.Critical, "Error", err.message);

@@ -1,0 +1,67 @@
+<div class="api-tester-root">
+    <h1>DuarteQuestions v1</h1>
+    <h2>DuarteQuestions .NET Core Web API Tester</h2>
+    <h3>Author: Carlos Enrique Duarte Ortiz</h3>
+    <h4>Copyright: 2023</h4>
+
+    <div class="api-tester-content">
+        <div class="api-tester-tabs">
+            <h2>Answer</h2>
+            <mat-tab-group>
+                <mat-tab label="GET">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>GET method</mat-label>
+                            <mat-select (selectionChange)="currentValueChanged($event)">
+                                <mat-option *ngFor="let endpoint of answerGetEndpoints" [value]="endpoint.value">
+                                    {{endpoint.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="answerValue === AnswerGetList">
+                        <h1>Get answer's list</h1>
+                        <div class="row">
+                            <mat-form-field class="col-md-3">
+                                <mat-label>Keyword</mat-label>
+                                <input matInput type="text" id="keyword" name="keyword">
+                            </mat-form-field>
+                            <mat-slide-toggle class="col-md-1" (change)="getAllChanged($event)">Get all</mat-slide-toggle>
+                            <button type="button" class="btn btn-primary api-tester-get-button">GET</button>                        
+                        </div>
+                        <!--todo... mostrar lista de answers en una estructura visual chida--->
+                        
+                        
+                    </div>
+                    <div *ngIf="answerValue === AnswerGet">
+                        <h1>DOS</h1>
+                    </div>
+                    <div *ngIf="answerValue === AnswerRestoreAll">
+                        <button type="button" class="btn btn-primary api-tester-get-button">GET</button>
+                    </div>                    
+                </mat-tab>
+                <mat-tab label="POST">POST method</mat-tab>
+                <mat-tab label="PUT">PUT method</mat-tab>
+                <mat-tab label="DELETE">DELETE method</mat-tab>
+            </mat-tab-group>
+        </div>
+        <div class="api-tester-tabs">
+            <h2>Question</h2>
+            <mat-tab-group>
+                <mat-tab label="GET">GET method</mat-tab>
+                <mat-tab label="POST">POST method</mat-tab>
+                <mat-tab label="PUT">PUT method</mat-tab>
+                <mat-tab label="DELETE">DELETE method</mat-tab>
+            </mat-tab-group>
+        </div>
+        <div class="api-tester-tabs">
+            <h2>User</h2>
+            <mat-tab-group>
+                <mat-tab label="GET">GET method</mat-tab>
+                <mat-tab label="POST">POST method</mat-tab>
+                <mat-tab label="PUT">PUT method</mat-tab>
+                <mat-tab label="DELETE">DELETE method</mat-tab>
+            </mat-tab-group>
+        </div>        
+    </div>
+</div>

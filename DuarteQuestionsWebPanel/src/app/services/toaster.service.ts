@@ -12,7 +12,7 @@ export enum MessageType {
   providedIn: 'root'
 })
 export class ToasterService {
-  private toastr = inject(ToastrService);
+  private toastr: ToastrService = inject(ToastrService);
 
   constructor() {}
 

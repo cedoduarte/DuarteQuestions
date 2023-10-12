@@ -1,5 +1,6 @@
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login/login.component';
+import { ApiTesterComponent } from './api-tester/api-tester.component';
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -16,11 +17,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    ApiTesterComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +43,9 @@ import { MatInputModule } from '@angular/material/input';
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatTabsModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [ AppComponent ]
