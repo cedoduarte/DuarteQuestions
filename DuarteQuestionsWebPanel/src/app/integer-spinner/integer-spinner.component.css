@@ -1,0 +1,25 @@
+.integer-spinner-widget {
+    width: 245px;
+    height: auto;
+}
+
+.integer-spinner-input {
+    width: auto;
+    height: 35px;
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: deepskyblue;
+}
+
+.integer-spinner-button {
+    margin: 0;
+    padding: 0;
+    width: 35px;
+    height: 35px;
+    font-size: 20px;
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: deepskyblue;
+}

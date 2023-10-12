@@ -6,7 +6,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 
@@ -19,15 +19,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import { MatListModule } from '@angular/material/list';
+import { IntegerSpinnerComponent } from './integer-spinner/integer-spinner.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    ApiTesterComponent
+    ApiTesterComponent,
+    IntegerSpinnerComponent
   ],
   imports: [
+    FormsModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
@@ -45,7 +49,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatFormFieldModule,
     MatInputModule,
     MatTabsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [ AppComponent ]
