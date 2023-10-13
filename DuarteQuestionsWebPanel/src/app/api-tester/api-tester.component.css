@@ -20,7 +20,43 @@
     padding-bottom: 100px;
 }
 
+.api-tester-switch {
+    margin-left: 10px;
+}
+
 .api-tester-get-button {
     width: 60px;
     height: 40px;
+    margin-left: 10px;
+}
+
+.api-tester-get-answer-button {
+    margin-left: 250px;
+    margin-top: -55px;
+}
+
+.api-tester-restore-button {
+    width: 100px;
+    height: 40px;
+}
+
+.api-tester-create-button {
+    width: 100px;
+    height: 40px;
+    margin-left: 5px;
+}
+
+.api-tester-restore-all-message {
+    margin-left: 10px;
+}
+
+.api-tester-answer-text {
+    position: relative;
+    left: -300px;
+    top: 10px;
+}
+
+.api-tester-answer {
+    width: auto;
+    height: 200px;
 }

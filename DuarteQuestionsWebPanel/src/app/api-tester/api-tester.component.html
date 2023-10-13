@@ -3,7 +3,6 @@
     <h2>DuarteQuestions .NET Core Web API Tester</h2>
     <h3>Author: Carlos Enrique Duarte Ortiz</h3>
     <h4>Copyright: 2023</h4>
-
     <div class="api-tester-content">
         <div class="api-tester-tabs">
             <h2>Answer</h2>
@@ -21,12 +20,12 @@
                     </div>
                     <div *ngIf="answerValue === AnswerGetList">
                         <h1>Get answer's list</h1>
-                        <div class="row">
-                            <mat-form-field class="col-md-3">
+                        <div>
+                            <mat-form-field>
                                 <mat-label>Keyword</mat-label>
                                 <input matInput type="text" id="keyword" name="keyword" [(ngModel)]="answerKeyword">
                             </mat-form-field>
-                            <mat-slide-toggle class="col-md-1" (change)="answerGetAllChanged($event)">Get all</mat-slide-toggle>
+                            <mat-slide-toggle class="api-tester-switch" (change)="answerGetAllChanged($event)">Get all</mat-slide-toggle>
                             <button type="button" class="btn btn-primary api-tester-get-button" (click)="getAnswerListClicked()">GET</button>                        
                         </div>
                         <mat-list>
@@ -37,17 +36,40 @@
                     </div>
                     <div *ngIf="answerValue === AnswerGet">
                         <h1>Get answer</h1>
-                        <div class="row">
-                            <app-integer-spinner class="col-md-3" [currentValue]="answerId" (currentValueChange)="answerIdChanged($event)"></app-integer-spinner>
-                            <button type="button" class="btn btn-primary col-md-1 api-tester-get-button" (click)="getAnswerById()">GET</button>
-                            <span>{{answerText}}</span>
+                        <div class="api-tester-answer">
+                            <app-integer-spinner [currentValue]="answerId" (currentValueChange)="answerIdChanged($event)"></app-integer-spinner>
+                            <button type="button" class="btn btn-primary col-md-1 api-tester-get-button api-tester-get-answer-button" (click)="getAnswerById()">GET</button>
+                            <span class="api-tester-answer-text">{{answerText}}</span>
                         </div>
                     </div>
                     <div *ngIf="answerValue === AnswerRestoreAll">
-                        <button type="button" class="btn btn-primary api-tester-get-button">GET</button>
+                        <button type="button" class="btn btn-primary api-tester-restore-button" (click)="restoreAllAnswerClicked()">Restore all</button>
+                        <span class="api-tester-restore-all-message">{{answersRestoredMessage}}</span>
                     </div>                    
                 </mat-tab>
-                <mat-tab label="POST">POST method</mat-tab>
+                <mat-tab label="POST">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>POST method</mat-label>
+                            <mat-select (selectionChange)="answerPostMethodSelected($event)">
+                                <mat-option *ngFor="let endpoint of answerPostEndpoints" [value]="endpoint.value">
+                                    {{endpoint.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="answerValue === AnswerCreate">
+                        <h1>Create answer</h1>
+                        <div class="row">
+                            <mat-form-field class="col-md-3">
+                                <mat-label>Answer</mat-label>
+                                <input matInput type="text" id="answerText" name="answerText" [(ngModel)]="createAnswerText">
+                            </mat-form-field>
+                            <button type="button" class="btn btn-primary api-tester-create-button" (click)="createAnswerClicked()">Create</button>    
+                            <span>{{answerCreatedMessage}}</span>
+                        </div>
+                    </div>
+                </mat-tab>
                 <mat-tab label="PUT">PUT method</mat-tab>
                 <mat-tab label="DELETE">DELETE method</mat-tab>
             </mat-tab-group>

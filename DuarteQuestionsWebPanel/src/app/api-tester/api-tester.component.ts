@@ -10,25 +10,35 @@ import { AnswerViewModel } from '../DTOs/models/models';
 })
 export class ApiTesterComponent {
   private toaster: ToasterService = inject(ToasterService);
-
   private answerService: AnswerService = inject(AnswerService);
 
   public AnswerGetList: number = 1;
   public AnswerGet: number = 2;
   public AnswerRestoreAll: number = 3;
+  public AnswerCreate: number = 4;
+
   public answerValue: number = this.AnswerGetList;
 
   public answerGetEndpoints: any[] = [
+    { value: -1, viewValue: "Select an option" },
     { value: this.AnswerGetList, viewValue: "get-answer-list" },
     { value: this.AnswerGet, viewValue: "get-answer" },
     { value: this.AnswerRestoreAll, viewValue: "restore-all" }
   ];
 
+  public answerPostEndpoints: any[] = [
+    { value: -1, viewValue: "Select an option" },
+    { value: this.AnswerCreate, viewValue: "create-answer" }
+  ];
+  
   private answerGetAll: boolean = false;
   public answerKeyword: string = "";
   public answers: AnswerViewModel[] = [];
   public answerId: number = 1;
   public answerText: string = "";
+  public createAnswerText: string = "";
+  public answersRestoredMessage: string = "Please, do click on restore all";
+  public answerCreatedMessage: string = "Please, do click on create";
 
   public answerGetMethodSelected($event: any): void {
     this.answerValue = $event.value;
@@ -61,5 +71,25 @@ export class ApiTesterComponent {
         error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
       });
     }
+  }
+
+  public restoreAllAnswerClicked(): void {
+    this.answerService.restoreAll().subscribe({
+      next: response => this.answersRestoredMessage = "All answers were restored successfully!",
+      error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+    });
+  }
+
+  public answerPostMethodSelected($event: any): void {
+    this.answerValue = $event.value;
+  }
+
+  public createAnswerClicked(): void {
+    this.answerService.createAnswer({
+      text: this.createAnswerText
+    }).subscribe({
+      next: response => this.answerCreatedMessage = "Answer '" + response.text + "' was created successfully",
+      error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+    });
   }
 }
