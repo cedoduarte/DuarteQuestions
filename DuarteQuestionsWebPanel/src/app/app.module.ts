@@ -21,13 +21,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
+import { AnswerUpdateEditorComponent } from './answer-update-editor/answer-update-editor.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     ApiTesterComponent,
-    IntegerSpinnerComponent
+    IntegerSpinnerComponent,
+    AnswerUpdateEditorComponent
   ],
   imports: [
     FormsModule,

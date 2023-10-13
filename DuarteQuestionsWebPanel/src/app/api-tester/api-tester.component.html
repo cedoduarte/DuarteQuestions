@@ -43,6 +43,7 @@
                         </div>
                     </div>
                     <div *ngIf="answerValue === AnswerRestoreAll">
+                        <h1>Restore all answers</h1>
                         <button type="button" class="btn btn-primary api-tester-restore-button" (click)="restoreAllAnswerClicked()">Restore all</button>
                         <span class="api-tester-restore-all-message">{{answersRestoredMessage}}</span>
                     </div>                    
@@ -70,7 +71,28 @@
                         </div>
                     </div>
                 </mat-tab>
-                <mat-tab label="PUT">PUT method</mat-tab>
+                <mat-tab label="PUT">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>PUT method</mat-label>
+                            <mat-select (selectionChange)="answerPutMethodSelected($event)">
+                                <mat-option *ngFor="let endpoint of answerPutEndpoints" [value]="endpoint.value">
+                                    {{endpoint.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="answerValue === AnswerUpdate">
+                        <h1>Update answer</h1>
+                        <div>
+                            <mat-list>
+                                <mat-list-item class="api-tester-edit-item" *ngFor="let answer of answers">
+                                    <app-answer-update-editor [answerId]="answer.id" [answerText]="answer.text" (editButtonClicked)="editAnswerClicked($event)"></app-answer-update-editor>
+                                </mat-list-item>
+                            </mat-list>
+                        </div>
+                    </div>
+                </mat-tab>
                 <mat-tab label="DELETE">DELETE method</mat-tab>
             </mat-tab-group>
         </div>

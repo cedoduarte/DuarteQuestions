@@ -16,6 +16,7 @@ export class ApiTesterComponent {
   public AnswerGet: number = 2;
   public AnswerRestoreAll: number = 3;
   public AnswerCreate: number = 4;
+  public AnswerUpdate: number = 5;
 
   public answerValue: number = this.AnswerGetList;
 
@@ -30,6 +31,11 @@ export class ApiTesterComponent {
     { value: -1, viewValue: "Select an option" },
     { value: this.AnswerCreate, viewValue: "create-answer" }
   ];
+
+  public answerPutEndpoints: any[] = [
+    { value: -1, viewValue: "Select an option" },
+    { value: this.AnswerUpdate, viewValue: "update-answer" }
+  ];
   
   private answerGetAll: boolean = false;
   public answerKeyword: string = "";
@@ -37,8 +43,8 @@ export class ApiTesterComponent {
   public answerId: number = 1;
   public answerText: string = "";
   public createAnswerText: string = "";
-  public answersRestoredMessage: string = "Please, do click on restore all";
-  public answerCreatedMessage: string = "Please, do click on create";
+  public answersRestoredMessage: string = "Please, do click on 'restore all'";
+  public answerCreatedMessage: string = "Please, do click on 'create'";
 
   public answerGetMethodSelected($event: any): void {
     this.answerValue = $event.value;
@@ -85,10 +91,37 @@ export class ApiTesterComponent {
   }
 
   public createAnswerClicked(): void {
-    this.answerService.createAnswer({
-      text: this.createAnswerText
+    if (this.createAnswerText.length > 0) {
+      this.answerService.createAnswer({
+        text: this.createAnswerText
+      }).subscribe({
+        next: response => this.answerCreatedMessage = "Answer '" + response.text + "' was created successfully",
+        error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+      });
+    } else {
+      this.toaster.showMessage(MessageType.Warning, "Warning", "Enter an answer text before clicking on 'create'");
+    }
+  }
+
+  public answerPutMethodSelected($event: any): void {
+    this.answerValue = $event.value;
+    if (this.answerValue === this.AnswerUpdate) {      
+      this.answerService.getAnswerList({
+        keyword: "",
+        getAll: true
+      }).subscribe({
+        next: response => this.answers = response,
+        error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+      });
+    }
+  }
+
+  public editAnswerClicked($event: any): void {
+    this.answerService.updateAnswer({
+      id: $event.id,
+      text: $event.text
     }).subscribe({
-      next: response => this.answerCreatedMessage = "Answer '" + response.text + "' was created successfully",
+      next: response => this.toaster.showMessage(MessageType.Success, "OK", "Answer updated successfully!"),
       error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
     });
   }
