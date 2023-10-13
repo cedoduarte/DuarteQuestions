@@ -86,14 +86,35 @@
                         <h1>Update answer</h1>
                         <div>
                             <mat-list>
-                                <mat-list-item class="api-tester-edit-item" *ngFor="let answer of answers">
+                                <mat-list-item *ngFor="let answer of answersForUpdate">
                                     <app-answer-update-editor [answerId]="answer.id" [answerText]="answer.text" (editButtonClicked)="editAnswerClicked($event)"></app-answer-update-editor>
                                 </mat-list-item>
                             </mat-list>
                         </div>
                     </div>
                 </mat-tab>
-                <mat-tab label="DELETE">DELETE method</mat-tab>
+                <mat-tab label="DELETE">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>DELETE method</mat-label>
+                            <mat-select (selectionChange)="answerDeleteMethodSelected($event)">
+                                <mat-option *ngFor="let endpoint of answerDeleteEndpoints" [value]="endpoint.value">
+                                    {{endpoint.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="answerValue === AnswerDelete">
+                        <h1>Delete answer</h1>
+                        <div>
+                            <mat-list>
+                                <mat-list-item *ngFor="let answer of answersForDelete">
+                                    <app-answer-deletion [answerId]="answer.id" [answerText]="answer.text" (deleteButtonClicked)="deleteAnswerClicked($event)"></app-answer-deletion>
+                                </mat-list-item>
+                            </mat-list>
+                        </div>
+                    </div>
+                </mat-tab>
             </mat-tab-group>
         </div>
         <div class="api-tester-tabs">

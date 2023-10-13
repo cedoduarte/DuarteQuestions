@@ -22,6 +22,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
 import { AnswerUpdateEditorComponent } from './answer-update-editor/answer-update-editor.component';
+import { AnswerDeletionComponent } from './answer-deletion/answer-deletion.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { AnswerUpdateEditorComponent } from './answer-update-editor/answer-updat
     LoginComponent,
     ApiTesterComponent,
     IntegerSpinnerComponent,
-    AnswerUpdateEditorComponent
+    AnswerUpdateEditorComponent,
+    AnswerDeletionComponent
   ],
   imports: [
     FormsModule,

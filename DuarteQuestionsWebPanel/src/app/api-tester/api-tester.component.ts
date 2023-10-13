@@ -17,6 +17,7 @@ export class ApiTesterComponent {
   public AnswerRestoreAll: number = 3;
   public AnswerCreate: number = 4;
   public AnswerUpdate: number = 5;
+  public AnswerDelete: number = 6;
 
   public answerValue: number = this.AnswerGetList;
 
@@ -36,10 +37,17 @@ export class ApiTesterComponent {
     { value: -1, viewValue: "Select an option" },
     { value: this.AnswerUpdate, viewValue: "update-answer" }
   ];
+
+  public answerDeleteEndpoints: any[] = [
+    { value: -1, viewValue: "Select an option" },
+    { value: this.AnswerDelete, viewValue: "delete-answer" }
+  ];
   
   private answerGetAll: boolean = false;
   public answerKeyword: string = "";
   public answers: AnswerViewModel[] = [];
+  public answersForUpdate: AnswerViewModel[] = [];
+  public answersForDelete: AnswerViewModel[] = [];
   public answerId: number = 1;
   public answerText: string = "";
   public createAnswerText: string = "";
@@ -110,7 +118,7 @@ export class ApiTesterComponent {
         keyword: "",
         getAll: true
       }).subscribe({
-        next: response => this.answers = response,
+        next: response => this.answersForUpdate = response,
         error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
       });
     }
@@ -122,6 +130,33 @@ export class ApiTesterComponent {
       text: $event.text
     }).subscribe({
       next: response => this.toaster.showMessage(MessageType.Success, "OK", "Answer updated successfully!"),
+      error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+    });
+  }
+
+  private populateAnswerForDelete(): void {
+    this.answerService.getAnswerList({
+      keyword: "",
+      getAll: true
+    }).subscribe({
+      next: response => this.answersForDelete = response,
+      error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+    });
+  }
+
+  public answerDeleteMethodSelected($event: any): void {
+    this.answerValue = $event.value;
+    if (this.answerValue === this.AnswerDelete) {      
+      this.populateAnswerForDelete();
+    }
+  }
+
+  public deleteAnswerClicked($event: any): void {
+    this.answerService.deleteAnswer($event.id).subscribe({
+      next: response => {
+        this.toaster.showMessage(MessageType.Success, "OK", "Answer deleted successfully!");
+        this.populateAnswerForDelete();
+      },
       error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
     });
   }
