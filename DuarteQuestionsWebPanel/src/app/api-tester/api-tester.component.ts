@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { AnswerService } from '../services/answer.service';
 import { MessageType, ToasterService } from '../services/toaster.service';
-import { AnswerViewModel } from '../DTOs/models/models';
+import { AnswerViewModel, UserViewModel } from '../DTOs/models/models';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-api-tester',
@@ -164,5 +165,61 @@ export class ApiTesterComponent {
       },
       error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
     });
+  }
+
+  private userService: UserService = inject(UserService);
+
+  public UserGetList: number = 1;
+  public UserGet: number = 2;
+
+  public userGetEndpoints: any[] = [
+    { value: -1, viewValue: "Select an option" },
+    { value: this.UserGetList, viewValue: "get-user-list" },
+    { value: this.UserGet, viewValue: "get-user" }
+  ];
+
+  public userValue: number = this.UserGetList;
+
+  private userGetAll: boolean = false;
+  public userKeyword: string = "";
+  public users: UserViewModel[] = [];
+  public userId: number = 1;
+  public userText: string = "";
+
+  public userGetMethodSelected($event: any): void {
+    this.userValue = $event.value;
+  }
+
+  public userGetAllChanged($event: any): void {
+    this.userGetAll = $event.checked;
+  }
+
+  private populateUserList(): void {
+    this.userService.getUserList({
+      keyword: this.userKeyword,
+      getAll: this.userGetAll
+    }).subscribe({
+      next: response => this.users = response,
+      error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+    });
+  }
+
+  public getUserListClicked(): void {
+    if (this.userGetAll || this.userKeyword.length > 0) {
+      this.populateUserList();
+    }
+  }
+
+  public userIdChanged($event: any): void {
+    this.userId = $event;
+  }
+
+  public getUserById(): void {
+    if (this.userId >= 0) {
+      this.userService.getUserById(this.userId).subscribe({
+        next: response => this.userText = response.id + " - " + response.name + " - " + response.email,
+        error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+      });
+    }
   }
 }

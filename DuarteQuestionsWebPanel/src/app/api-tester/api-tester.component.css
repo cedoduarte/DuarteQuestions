@@ -60,3 +60,21 @@
     width: auto;
     height: 200px;
 }
+
+/*------------------------------- user styles -------------------------------*/
+
+.api-tester-user {
+    width: auto;
+    height: 200px;
+}
+
+.api-tester-get-user-button {
+    margin-left: 250px;
+    margin-top: -55px;
+}
+
+.api-tester-user-text {
+    position: relative;
+    left: -300px;
+    top: 10px;
+}

@@ -19,7 +19,7 @@
                         </mat-form-field>
                     </div>
                     <div *ngIf="answerValue === AnswerGetList">
-                        <h1>Get answer's list</h1>
+                        <h1>Get answers' list</h1>
                         <div>
                             <mat-form-field>
                                 <mat-label>Keyword</mat-label>
@@ -38,7 +38,7 @@
                         <h1>Get answer</h1>
                         <div class="api-tester-answer">
                             <app-integer-spinner [currentValue]="answerId" (currentValueChange)="answerIdChanged($event)"></app-integer-spinner>
-                            <button type="button" class="btn btn-primary col-md-1 api-tester-get-button api-tester-get-answer-button" (click)="getAnswerById()">GET</button>
+                            <button type="button" class="btn btn-primary api-tester-get-button api-tester-get-answer-button" (click)="getAnswerById()">GET</button>
                             <span class="api-tester-answer-text">{{answerText}}</span>
                         </div>
                     </div>
@@ -129,7 +129,42 @@
         <div class="api-tester-tabs">
             <h2>User</h2>
             <mat-tab-group>
-                <mat-tab label="GET">GET method</mat-tab>
+                <mat-tab label="GET">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>GET method</mat-label>
+                            <mat-select (selectionChange)="userGetMethodSelected($event)">
+                                <mat-option *ngFor="let endpoint of userGetEndpoints" [value]="endpoint.value">
+                                    {{endpoint.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="userValue === UserGetList">
+                        <h1>Get users' list</h1>
+                        <div>
+                            <mat-form-field>
+                                <mat-label>Keyword</mat-label>
+                                <input matInput type="text" id="keyword" name="keyword" [(ngModel)]="userKeyword">
+                            </mat-form-field>
+                            <mat-slide-toggle class="api-tester-switch" (change)="userGetAllChanged($event)">Get all</mat-slide-toggle>
+                            <button type="button" class="btn btn-primary api-tester-get-button" (click)="getUserListClicked()">GET</button>
+                        </div>
+                        <mat-list>
+                            <mat-list-item *ngFor="let user of users">
+                                {{user.id}} - {{user.name}} - {{user.email}}
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                    <div *ngIf="userValue === UserGet">
+                        <h1>Get user</h1>
+                        <div class="api-tester-user">
+                            <app-integer-spinner [currentValue]="userId" (currentValueChange)="userIdChanged($event)"></app-integer-spinner>
+                            <button type="button" class="btn btn-primary api-tester-get-button api-tester-get-user-button" (click)="getUserById()">GET</button>
+                            <span class="api-tester-user-text">{{userText}}</span>
+                        </div>
+                    </div>
+                </mat-tab>
                 <mat-tab label="POST">POST method</mat-tab>
                 <mat-tab label="PUT">PUT method</mat-tab>
                 <mat-tab label="DELETE">DELETE method</mat-tab>
