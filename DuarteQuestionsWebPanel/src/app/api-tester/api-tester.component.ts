@@ -18,7 +18,7 @@ export class ApiTesterComponent {
   public AnswerCreate: number = 4;
   public AnswerUpdate: number = 5;
   public AnswerDelete: number = 6;
-
+  
   public answerValue: number = this.AnswerGetList;
 
   public answerGetEndpoints: any[] = [
@@ -27,22 +27,19 @@ export class ApiTesterComponent {
     { value: this.AnswerGet, viewValue: "get-answer" },
     { value: this.AnswerRestoreAll, viewValue: "restore-all" }
   ];
-
   public answerPostEndpoints: any[] = [
     { value: -1, viewValue: "Select an option" },
     { value: this.AnswerCreate, viewValue: "create-answer" }
   ];
-
   public answerPutEndpoints: any[] = [
     { value: -1, viewValue: "Select an option" },
     { value: this.AnswerUpdate, viewValue: "update-answer" }
   ];
-
   public answerDeleteEndpoints: any[] = [
     { value: -1, viewValue: "Select an option" },
     { value: this.AnswerDelete, viewValue: "delete-answer" }
   ];
-  
+
   private answerGetAll: boolean = false;
   public answerKeyword: string = "";
   public answers: AnswerViewModel[] = [];
@@ -61,16 +58,20 @@ export class ApiTesterComponent {
   public answerGetAllChanged($event: any): void {
     this.answerGetAll = $event.checked;
   }
+
+  private populateAnswerList(): void {
+    this.answerService.getAnswerList({
+      keyword: this.answerKeyword,
+      getAll: this.answerGetAll
+    }).subscribe({
+      next: response => this.answers = response,
+      error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+    });
+  }
   
   public getAnswerListClicked(): void {
     if (this.answerGetAll || this.answerKeyword.length > 0) {    
-      this.answerService.getAnswerList({
-        keyword: this.answerKeyword,
-        getAll: this.answerGetAll
-      }).subscribe({
-        next: response => this.answers = response,
-        error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
-      });
+      this.populateAnswerList();
     }
   }
 
@@ -111,16 +112,20 @@ export class ApiTesterComponent {
     }
   }
 
+  private populateAnswerForUpdate(): void {
+    this.answerService.getAnswerList({
+      keyword: "",
+      getAll: true
+    }).subscribe({
+      next: response => this.answersForUpdate = response,
+      error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+    });
+  }
+
   public answerPutMethodSelected($event: any): void {
     this.answerValue = $event.value;
     if (this.answerValue === this.AnswerUpdate) {      
-      this.answerService.getAnswerList({
-        keyword: "",
-        getAll: true
-      }).subscribe({
-        next: response => this.answersForUpdate = response,
-        error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
-      });
+      this.populateAnswerForUpdate();
     }
   }
 
