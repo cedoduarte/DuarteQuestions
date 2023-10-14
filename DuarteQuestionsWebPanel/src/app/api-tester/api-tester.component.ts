@@ -105,7 +105,7 @@ export class ApiTesterComponent {
       this.answerService.createAnswer({
         text: this.createAnswerText
       }).subscribe({
-        next: response => this.answerCreatedMessage = "Answer '" + response.text + "' was created successfully",
+        next: response => this.answerCreatedMessage = "Answer '" + response.text + "' was created successfully!",
         error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
       });
     } else {
@@ -171,11 +171,16 @@ export class ApiTesterComponent {
 
   public UserGetList: number = 1;
   public UserGet: number = 2;
+  public UserCreate: number = 3;
 
   public userGetEndpoints: any[] = [
     { value: -1, viewValue: "Select an option" },
     { value: this.UserGetList, viewValue: "get-user-list" },
     { value: this.UserGet, viewValue: "get-user" }
+  ];
+  public userPostEndpoints: any[] = [
+    { value: -1, viewValue: "Select an option" },
+    { value: this.UserCreate, viewValue: "create-user" }
   ];
 
   public userValue: number = this.UserGetList;
@@ -186,6 +191,13 @@ export class ApiTesterComponent {
   public userId: number = 1;
   public userText: string = "";
 
+  public username: string = "";
+  public userEmail: string = "";
+  public userConfirmedEmail: string = "";
+  public userPassword: string = "";
+  public userConfirmedPassword: string = "";
+  public userCreatedMessage: string = "Please, do click on 'create'";
+  
   public userGetMethodSelected($event: any): void {
     this.userValue = $event.value;
   }
@@ -221,5 +233,50 @@ export class ApiTesterComponent {
         error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
       });
     }
+  }
+
+  public userPostMethodSelected($event: any): void {
+    this.userValue = $event.value;
+  }
+
+  public createUserClicked(): void {
+    if (this.username.length === 0) {
+      this.toaster.showMessage(MessageType.Warning, "Warning", "You need to enter the username!");
+      return;
+    }
+    if (this.userEmail.length === 0) {
+      this.toaster.showMessage(MessageType.Warning, "Warning", "You need to enter the email!");
+      return;
+    }
+    if (this.userConfirmedEmail.length === 0) {
+      this.toaster.showMessage(MessageType.Warning, "Warning", "You need to enter the confirmed email!");
+      return;
+    }
+    if (this.userPassword.length === 0) {
+      this.toaster.showMessage(MessageType.Warning, "Warning", "You need to enter the password!");
+      return;
+    }
+    if (this.userConfirmedPassword.length === 0) {
+      this.toaster.showMessage(MessageType.Warning, "Warning", "You need to enter the confirmed password!");
+      return;
+    }
+    if (this.userEmail !== this.userConfirmedEmail) {
+      this.toaster.showMessage(MessageType.Warning, "Warning", "Email and confirmed email need to be equals")
+      return;
+    }
+    if (this.userPassword !== this.userConfirmedPassword) {
+      this.toaster.showMessage(MessageType.Warning, "Warning", "Password and confirmed password need to be equals");
+      return;
+    }
+    this.userService.createUser({
+      name: this.username,
+      email: this.userEmail,
+      confirmedEmail: this.userConfirmedEmail,
+      password: this.userPassword,
+      confirmedPassword: this.userConfirmedPassword
+    }).subscribe({
+      next: response => this.userCreatedMessage = "User '" + this.username + "' was created successfully!",
+      error: err => this.toaster.showMessage(MessageType.Critical, "Error", err.message)
+    });
   }
 }

@@ -61,13 +61,13 @@
                     </div>
                     <div *ngIf="answerValue === AnswerCreate">
                         <h1>Create answer</h1>
-                        <div class="row">
-                            <mat-form-field class="col-md-3">
+                        <div>
+                            <mat-form-field>
                                 <mat-label>Answer</mat-label>
                                 <input matInput type="text" id="answerText" name="answerText" [(ngModel)]="createAnswerText">
                             </mat-form-field>
                             <button type="button" class="btn btn-primary api-tester-create-button" (click)="createAnswerClicked()">Create</button>    
-                            <span>{{answerCreatedMessage}}</span>
+                            <span class="api-tester-answer-created-message">{{answerCreatedMessage}}</span>
                         </div>
                     </div>
                 </mat-tab>
@@ -165,7 +165,45 @@
                         </div>
                     </div>
                 </mat-tab>
-                <mat-tab label="POST">POST method</mat-tab>
+                <mat-tab label="POST">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>POST method</mat-label>
+                            <mat-select (selectionChange)="userPostMethodSelected($event)">
+                                <mat-option *ngFor="let endpoint of userPostEndpoints" [value]="endpoint.value">
+                                    {{endpoint.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="userValue == UserCreate">
+                        <h1>Create user</h1>                        
+                        <div>
+                            <mat-form-field>
+                                <mat-label>Username</mat-label>
+                                <input matInput type="text" id="username" name="username" [(ngModel)]="username">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Email</mat-label>
+                                <input matInput type="text" id="email" name="email" [(ngModel)]="userEmail">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Confirmed email</mat-label>
+                                <input matInput type="text" id="confirmedEmail" name="confirmedEmail" [(ngModel)]="userConfirmedEmail">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Password</mat-label>
+                                <input matInput type="password" id="password" name="password" [(ngModel)]="userPassword">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Confirmed password</mat-label>
+                                <input matInput type="password" id="confirmedPassword" name="confirmedPassword" [(ngModel)]="userConfirmedPassword">
+                            </mat-form-field>
+                            <button type="button" class="btn btn-primary api-tester-create-button" (click)="createUserClicked()">Create</button>
+                            <span>{{userCreatedMessage}}</span>
+                        </div>
+                    </div>
+                </mat-tab>
                 <mat-tab label="PUT">PUT method</mat-tab>
                 <mat-tab label="DELETE">DELETE method</mat-tab>
             </mat-tab-group>
